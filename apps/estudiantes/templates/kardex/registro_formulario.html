@@ -1,0 +1,76 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Nuevo registro de kárdex{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'estudiantes/css/registro_kardex.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="kardex-form-dashboard">
+  <form method="post" class="form-usuario">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="titulo-form">Nuevo registro de kárdex</div>
+
+    <div class="estudiante-info">
+      <span>Estudiante:</span> {{ estudiante.apellidos }} {{ estudiante.nombres }}
+    </div>
+
+    <!-- ======= FECHA ======= -->
+    <div class="form-group">
+      {{ form.fecha.errors }}
+      {{ form.fecha.label_tag }}
+      {{ form.fecha }}  <!-- input nativo (oculto) -->
+      <div class="fecha-ui">
+        <select id="dia_select" class="select-ui"></select>
+        <span id="mes_label" class="mes-label"></span>
+      </div>
+    </div>
+
+    <!-- ======= HORA ======= -->
+    <div class="form-group">
+      {{ form.hora.errors }}
+      {{ form.hora.label_tag }}
+      {{ form.hora }}  <!-- input nativo (oculto) -->
+      <select id="hora_select" class="select-ui"></select>
+    </div>
+
+    <div class="form-group">
+      {{ form.kardex_item.label_tag }}
+      {{ form.kardex_item }}
+    </div>
+
+    <div class="form-group">
+      {{ form.observacion.label_tag }}
+      {{ form.observacion }}
+    </div>
+
+    <div class="form-group">
+      {{ form.sello_maestro.label_tag }}
+      {{ form.sello_maestro }}
+    </div>
+
+    {% with role=request.user.rol.nombre|default_if_none:""|default:""|lower %}
+      {% if "director" in role or "secretaria" in role or "secretaría" in role %}
+        <p style="margin-top:8px">
+          ¿Falta un ítem?
+          <a href="{% url 'estudiantes:kardex_items_nuevo' %}">Crear ítem de kárdex</a>
+        </p>
+      {% endif %}
+    {% endwith %}
+
+    <div class="form-actions">
+      <button type="submit" class="btn-guardar">Guardar</button>
+      <a href="{% url 'estudiantes:kardex_listar' estudiante.id %}" class="btn-volver">Cancelar</a>
+    </div>
+  </form>
+</div>
+
+{% block scripts %}
+<script src="{% static 'estudiantes/js/registro_formulario.js' %}"></script>
+{% endblock %}
+
+{% endblock %}

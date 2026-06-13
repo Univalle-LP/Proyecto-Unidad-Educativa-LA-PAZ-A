@@ -1,0 +1,37 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+{% block title %}Detalle del Usuario{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'cuentas/css/ver_usuario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="detalle-usuario">
+  <h2 class="titulo-detalle">Detalle del Usuario</h2>
+
+  <div class="card-detalle">
+    <ul class="lista-detalle">
+      <li><span class="label">CI:</span> <span class="valor">{{ usuario.ci }}</span></li>
+      <li><span class="label">Nombres:</span> <span class="valor">{{ usuario.nombres }}</span></li>
+      <li><span class="label">Apellidos:</span> <span class="valor">{{ usuario.apellidos }}</span></li>
+      <li><span class="label">Email:</span> <span class="valor">{{ usuario.email }}</span></li>
+      <li><span class="label">Teléfono:</span> <span class="valor">{{ usuario.telefono }}</span></li>
+      <li><span class="label">Rol:</span> <span class="valor">{{ usuario.rol.nombre }}</span></li>
+      <li>
+        <span class="label">Estado:</span>
+        <span class="valor estado {% if usuario.is_activo %}activo{% else %}inactivo{% endif %}">
+          {{ usuario.is_activo|yesno:"Activo,Inactivo" }}
+        </span>
+      </li>
+      <li><span class="label">Creado:</span> <span class="valor">{{ usuario.creado_en|date:"d/m/Y H:i" }}</span></li>
+      <li><span class="label">Última actualización:</span> <span class="valor">{{ usuario.actualizado_en|date:"d/m/Y H:i" }}</span></li>
+    </ul>
+  </div>
+
+  <div class="acciones-detalle">
+    <a href="{% url 'cuentas:editar_usuario' usuario.id %}" class="btn-editar">Editar</a>
+    <a href="{% url 'cuentas:lista_usuarios' %}" class="btn-volver">Volver</a>
+  </div>
+</div>
+{% endblock %}

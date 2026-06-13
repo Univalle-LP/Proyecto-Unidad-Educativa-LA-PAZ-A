@@ -1,0 +1,133 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Dashboard del Regente{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'cuentas/css/dashboard_director.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="dashboard-header">
+    <h2 class="hdr-sub">Panel del Regente</h2>
+    <p>Resumen de asistencia y citaciones de tus cursos.</p>
+  </div>
+
+  <section class="dashboard-main-grid">
+    <!-- COLUMNA IZQUIERDA -->
+    <div class="column left-column">
+      <!-- Asistencia hoy (donut grande) -->
+      <div class="row top-row">
+        <div class="chart-card large-card">
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4>Asistencia hoy (mis cursos)</h4>
+            </div>
+            <div class="chart-body kpi-chart-body">
+              <div class="kpi-canvas-wrapper">
+                <canvas id="regAsistenciaHoyChart"></canvas>
+                <div class="kpi-value">
+                  {% if pct_presentes_hoy is not None %}{{ pct_presentes_hoy }}%{% else %}—{% endif %}
+                </div>
+              </div>
+              {% if total_marcas_hoy %}
+                <p class="kpi-subtitle">Sobre {{ total_marcas_hoy }} registros de hoy.</p>
+              {% else %}
+                <p class="kpi-subtitle">Aún no se registró asistencia hoy.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Asistencia por mes + faltas por curso -->
+      <div class="row bottom-row">
+        <div class="chart-card">
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4>Asistencia por mes</h4>
+            </div>
+            <div class="chart-body">
+              <canvas id="regAsistenciaMesesChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4>Faltas y atrasos por curso (30 días)</h4>
+            </div>
+            <div class="chart-body">
+              <canvas id="regFaltasCursoChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COLUMNA DERECHA -->
+    <div class="column right-column">
+      <div class="row top-row">
+        <div class="chart-card">
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4>Citaciones por estado (mis cursos)</h4>
+            </div>
+            <div class="chart-body pie-chart-body">
+              <canvas id="regCitacionesEstadoChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row bottom-row">
+        <div class="chart-card">
+          <div class="chart-container">
+            <div class="chart-header">
+              <h4>Próximas citaciones</h4>
+            </div>
+            <div class="chart-body table-body">
+              {% if citaciones_proximas %}
+                <table class="tabla-mini">
+                  <thead>
+                    <tr>
+                      <th>Fecha</th>
+                      <th>Hora</th>
+                      <th>Estudiante</th>
+                      <th>Curso</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for c in citaciones_proximas %}
+                    <tr>
+                      <td>{{ c.fecha_citacion|date:"d/m" }}</td>
+                      <td>{{ c.hora_citacion|time:"H:i" }}</td>
+                      <td>{{ c.estudiante }}</td>
+                      <td>{{ c.estudiante.curso }}</td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              {% else %}
+                <p class="texto-vacio">No hay citaciones próximas.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ==== JSON para Chart.js ==== #}
+  {{ reg_asistencia_hoy|json_script:"reg-asistencia-hoy" }}
+  {{ reg_asistencia_meses|json_script:"reg-asistencia-meses" }}
+  {{ reg_faltas_curso|json_script:"reg-faltas-curso" }}
+  {{ reg_citaciones_estado|json_script:"reg-citaciones-estado" }}
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  {% block extra_js %}
+    {{ block.super }}
+    <script src="{% static 'cuentas/js/dashboard_regente.js' %}"></script>
+  {% endblock %}
+{% endblock %}

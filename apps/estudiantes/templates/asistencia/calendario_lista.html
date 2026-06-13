@@ -1,0 +1,176 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+{% block title %}Calendario de Asistencia{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'estudiantes/css/calendario_asistencia.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="dashboard-header">
+    <h2 class="hdr-sub">
+      Calendario de asistencia
+    </h2>
+  </div>
+
+{% if puede_configurar_calendario %}
+  <div class="asistencia-container">
+    <div class="columna-calendario">
+      <form method="post" class="form-calendario card shadow-lg rounded-4 overflow-hidden">
+        {% csrf_token %}
+        <input type="hidden" name="activo" value="True">
+
+        <div class="form-header">
+          <h4>Configuración del Calendario</h4>
+          <p>Define el rango y los días hábiles</p>
+        </div>
+
+        <div class="form-body">
+          <div class="columna">
+            <h5>📅 Rango de fechas</h5>
+            <div class="mb-3">
+              <label for="{{ form.fecha_inicio.id_for_label }}" class="form-label fw-semibold">Fecha inicio</label>
+              {{ form.fecha_inicio }}
+            </div>
+            <div>
+              <label for="{{ form.fecha_fin.id_for_label }}" class="form-label fw-semibold">Fecha fin</label>
+              {{ form.fecha_fin }}
+            </div>
+          </div>
+
+          <div class="columna">
+            <h5>🗓️ Días hábiles</h5>
+            <div class="dias-habiles">
+              <div>{{ form.lunes.label_tag }} {{ form.lunes }}</div>
+              <div>{{ form.martes.label_tag }} {{ form.martes }}</div>
+              <div>{{ form.miercoles.label_tag }} {{ form.miercoles }}</div>
+              <div>{{ form.jueves.label_tag }} {{ form.jueves }}</div>
+              <div>{{ form.viernes.label_tag }} {{ form.viernes }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <button class="btn-guardar mt-2">Guardar</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="columna-resumen">
+      <div class="resumen-mensual">
+        <div class="form-header">
+          <h4>Resumen mensual</h4>
+          <p>Reportes mensuales de la asistencia</p>
+        </div>
+
+        <form method="get" class="row g-2 mb-3 align-items-end">
+          <div class="col-auto">
+            <label class="form-label">Año</label>
+            <input type="number" name="anio" value="{{ resumen.year }}" class="form-control" min="2000" max="2100">
+          </div>
+          <div class="col-auto">
+            <label class="form-label">Mes</label>
+            <select name="mes" class="form-select">
+              {% for m in meses %}
+                <option value="{{ m }}" {% if m == resumen.month %}selected{% endif %}>{{ m }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-outline-secondary">Filtrar</button>
+          </div>
+        </form>
+
+        {% if resumen.tiene_calendario %}
+        <div class="resumen-card">
+          <div><strong>Días hábiles:</strong> {{ resumen.dias_habiles }}</div>
+          <div><span class="badge bg-success">P: {{ resumen.cuenta_P }} ({{ resumen.pct_P }}%)</span></div>
+          <div><span class="badge bg-danger">F: {{ resumen.cuenta_F }} ({{ resumen.pct_F }}%)</span></div>
+          <div><span class="badge bg-warning text-dark">R: {{ resumen.cuenta_R }} ({{ resumen.pct_R }}%)</span></div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning mt-2">No hay calendario activo.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+{% else %}
+  <div class="asistencia-container solo-resumen">
+    <div class="columna-resumen">
+      <div class="resumen-mensual">
+        <div class="form-header">
+          <h4>Resumen mensual</h4>
+          <p>Reportes mensuales de la asistencia</p>
+        </div>
+
+        <form method="get" class="row g-2 mb-3 align-items-end">
+          <div class="col-auto">
+            <label class="form-label">Año</label>
+            <input type="number" name="anio" value="{{ resumen.year }}" class="form-control" min="2000" max="2100">
+          </div>
+          <div class="col-auto">
+            <label class="form-label">Mes</label>
+            <select name="mes" class="form-select">
+              {% for m in meses %}
+                <option value="{{ m }}" {% if m == resumen.month %}selected{% endif %}>{{ m }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-outline-secondary">Filtrar</button>
+          </div>
+        </form>
+
+        {% if resumen.tiene_calendario %}
+        <div class="resumen-card">
+          <div><strong>Días hábiles:</strong> {{ resumen.dias_habiles }}</div>
+          <div><span class="badge bg-success">P: {{ resumen.cuenta_P }} ({{ resumen.pct_P }}%)</span></div>
+          <div><span class="badge bg-danger">F: {{ resumen.cuenta_F }} ({{ resumen.pct_F }}%)</span></div>
+          <div><span class="badge bg-warning text-dark">R: {{ resumen.cuenta_R }} ({{ resumen.pct_R }}%)</span></div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning mt-2">No hay calendario activo.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<div class="sub-header">
+  <h4>Calendarios existentes</h4>
+  <p>Define el rango y los días hábiles</p>
+</div>
+<div class="table-wrapper">
+  <table class="tabla-calendarios table table-sm">
+    <thead>
+      <tr>
+        <th>Rango</th>
+        <th>Activo</th>
+        {% if puede_gestionar_exclusiones %}
+          <th>Acciones</th>
+        {% endif %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in calendarios %}
+      <tr>
+        <td>{{ c.fecha_inicio }} → {{ c.fecha_fin }}</td>
+        <td>{{ c.activo|yesno:"Sí,No" }}</td>
+        {% if puede_gestionar_exclusiones %}
+          <td>
+            <a class="btn-accion" href="{% url 'estudiantes:asistencia_exclusiones' c.id %}">Exclusiones</a>
+          </td>
+        {% endif %}
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="{% if puede_gestionar_exclusiones %}3{% else %}2{% endif %}" class="text-center">
+          Sin calendarios.
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

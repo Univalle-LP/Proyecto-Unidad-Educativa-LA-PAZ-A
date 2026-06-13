@@ -1,0 +1,76 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+{% block title %}Estudiantes – {{ curso }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'estudiantes/css/estudiantes_curso.css' %}">
+{% endblock %}
+
+{% block content %}
+  <!-- === ENCABEZADO === -->
+  <div class="dashboard-header">
+    <h2 class="hdr-sub">
+      Estudiantes de {{ curso }}
+    </h2>
+    <p>Listado de los estudiantes del curso correspondiente.</p>
+  </div>
+
+  {% with role=request.user.rol.nombre|default_if_none:""|default:""|lower %}
+  <form method="get" class="form-cursos">
+    <input type="text" name="q" value="{{ request.GET.q }}" placeholder="Buscar por CI, Nombre o Apellido" class="input-busqueda">
+    <button type="submit" class="btn-buscar">Buscar</button>
+
+    {% if 'regente' in role %}
+      <a href="{% url 'cursos:mis_cursos_regente' %}" class="btn-nuevo">Volver a cursos</a>
+    {% else %}
+      <a href="{% url 'cursos:lista_cursos' %}" class="btn-nuevo">Volver a cursos</a>
+    {% endif %}
+
+    <span class="total-estudiantes">Total: {{ total }}</span>
+  </form>
+
+  <div class="table-wrapper">
+    <table class="tabla estudiantes-tabla">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Apellidos</th>
+          <th>Nombres</th>
+          <th>CI</th>
+          <th>Padre/Tutor</th>
+          <th>Kárdex</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in object_list %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ e.apellidos }}</td>
+          <td>{{ e.nombres }}</td>
+          <td>{{ e.ci }}</td>
+          <td>{{ e.padre|default:"—" }}</td>
+          <td>{% if e.kardex_id %}Asignado{% else %}—{% endif %}</td>
+          <td>
+            {# Director y Secretaría pueden editar los datos del estudiante #}
+            {% if "director" in role or "secretaria" in role or "secretaría" in role %}
+              <a href="{% url 'estudiantes:editar' e.pk %}" class="btn-editar">Editar</a>
+            {% endif %}
+
+            {# Todos los roles que llegan aquí pueden ver el kárdex #}
+            <a href="{% url 'estudiantes:kardex_listar' e.pk %}" class="btn-ver">Ver kárdex</a>
+
+            {# Solo Director y Regente pueden AGREGAR kárdex #}
+            {% if "director" in role or "regente" in role %}
+              <a href="{% url 'estudiantes:kardex_nuevo' e.pk %}" class="btn-agregar-kardex">Agregar kárdex</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="7">No hay estudiantes en este curso.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endwith %}
+{% endblock %}

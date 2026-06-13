@@ -1,0 +1,18 @@
+{% load static %}
+  <link rel="stylesheet" href="{% static 'cuentas/css/Error.css' %}">
+{% block content %}
+<section class="card" style="max-width:760px;margin:6vh auto;padding:24px;text-align:center;">
+  <h1 style="font-size:48px;margin:0;">404</h1>
+  <p style="margin:8px 0 16px;">La URL que ha solicitado no existe.</p>
+  <p>Volveremos automáticamente en <strong id="secs">{{ seconds }}</strong> s…</p>
+
+  <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;">
+    <a id="btn-volver" class="btn" href="{{ previous_url|default:'/' }}">Volver ahora</a>
+    <a class="btn" href="{% url 'cuentas:director_dashboard' %}">Ir al inicio</a>
+  </div>
+</section>
+
+  {% block extra_js %}
+    <script src="{% static 'cuentas/js/404.js' %}"></script>
+  {% endblock %}
+{% endblock %}

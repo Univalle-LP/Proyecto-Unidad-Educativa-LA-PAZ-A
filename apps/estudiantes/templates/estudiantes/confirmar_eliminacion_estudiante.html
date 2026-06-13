@@ -1,0 +1,29 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Eliminar Estudiante{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'cuentas/css/eliminar_usuario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="detalle-usuario">
+  <h2 class="titulo-detalle">No se puede eliminar</h2>
+
+  <div class="card-detalle">
+    <p>No se puede eliminar al estudiante <strong>{{ estudiante }}</strong> porque tiene citaciones asociadas.</p>
+    <p>Elimina primero las citaciones relacionadas o presiona el botón de abajo para eliminarlo completamente junto con sus registros.</p>
+  </div>
+
+  <div class="acciones-detalle">
+    <form method="post" action="{% url 'estudiantes:eliminar_completo' estudiante.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn-eliminar">
+        ⚠️ Eliminar completamente
+      </button>
+    </form>
+    <a href="{% url 'estudiantes:listar' %}" class="btn-volver">Cancelar</a>
+  </div>
+</div>
+{% endblock %}

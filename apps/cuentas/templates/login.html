@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | Unidad Educativa La Paz A</title>
+
+    <!-- Evitar caché para que el botón Atrás no muestre formularios viejos -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
+    <style>
+      /* Estilos mínimos por si tu CSS no define mensajes */
+      .msgs{display:grid;gap:.5rem;margin-top:1rem}
+      .msg{padding:.8rem 1rem;border-radius:8px;border:1px solid transparent}
+      .msg-success{background:#e7f6ec;border-color:#b7e1c0;color:#1b6e35}
+      .msg-error,.msg-danger{background:#fde8e8;border-color:#f5c2c7;color:#842029}
+      .msg-info{background:#e7f1ff;border-color:#b6d4fe;color:#084298}
+      .msg-warning{background:#fff4e5;border-color:#ffe0a3;color:#664d03}
+    </style>
+</head>
+<body class="login-split">
+
+    <div class="login-left">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" class="logo">
+        <h1>Unidad Educativa<br>La Paz "A"</h1>
+    </div>
+
+    <div class="login-right">
+        <div class="form-container">
+            <h2>Iniciar Sesión</h2>
+
+            <form id="login-form" method="POST" action="{% url 'login' %}" autocomplete="on">
+                {% csrf_token %}
+
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="CI"
+                  required
+                  autocomplete="username"
+                  inputmode="numeric"
+                  pattern="^\d{1,8}$"
+                  maxlength="8"
+                  title="Solo números (1–8 dígitos)" />
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Contraseña"
+                  required
+                  autocomplete="current-password"
+                  maxlength="50"
+                  title="Máximo 50 caracteres" />
+                <div class="form-options">
+                    <button id="login-submit" type="submit" class="btn-go">Entrar</button>
+                </div>
+
+                {# --- Mensajes debajo del botón --- #}
+                {% if messages %}
+                  <div class="msgs">
+                    {% for message in messages %}
+                      <div class="msg msg-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <!-- Script anti multi-submit y validación de espacios -->
+<script>
+(function () {
+  const form = document.getElementById('login-form');
+  const btn  = document.getElementById('login-submit');
+  const user = document.querySelector('input[name="username"]');
+  const pass = document.querySelector('input[name="password"]');
+  if (!form || !btn || !user || !pass) return;
+
+  // username: forzar solo dígitos y máximo 8
+  const normalizeUser = () => {
+    user.value = (user.value || '').replace(/\D+/g, '').slice(0, 8);
+    if (!user.value) {
+      user.setCustomValidity('Ingresa tu CI (solo números, 1–8 dígitos).');
+    } else {
+      user.setCustomValidity('');
+    }
+  };
+  user.addEventListener('input', normalizeUser);
+  user.addEventListener('paste', e => {
+    e.preventDefault();
+    const txt = (e.clipboardData.getData('text') || '').replace(/\D+/g, '').slice(0, 8);
+    document.execCommand('insertText', false, txt);
+    normalizeUser();
+  });
+  normalizeUser();
+
+  // password: máximo 50
+  pass.addEventListener('input', () => {
+    if (pass.value.length > 50) pass.value = pass.value.slice(0, 50);
+    pass.setCustomValidity(pass.value ? '' : 'Ingresa tu contraseña.');
+  });
+
+  // Anti multi-submit
+  let locked = false;
+  form.addEventListener('submit', function (e) {
+    normalizeUser();
+    if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); return; }
+    if (locked) { e.preventDefault(); return; }
+    locked = true;
+    btn.disabled = true;
+    const orig = btn.textContent;
+    btn.textContent = 'Procesando…';
+    setTimeout(() => {
+      if (!locked) return;
+      locked = false; btn.disabled = false; btn.textContent = orig;
+    }, 8000);
+  });
+  btn.addEventListener('click', e => { if (btn.disabled) e.preventDefault(); });
+})();
+</script>
+
+
+</body>
+</html>

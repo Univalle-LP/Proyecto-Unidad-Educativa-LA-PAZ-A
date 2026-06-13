@@ -1,0 +1,28 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Ficha del estudiante{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'estudiantes/css/hijo_detalle.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="detalle-curso">
+  <h2 class="titulo-detalle">Ficha del estudiante</h2>
+
+  <div class="card-detalle">
+    <ul class="lista-detalle">
+      <li><span class="label">Apellidos:</span> <span class="valor">{{ hijo.apellidos }}</span></li>
+      <li><span class="label">Nombres:</span> <span class="valor">{{ hijo.nombres }}</span></li>
+      <li><span class="label">CI:</span> <span class="valor">{{ hijo.ci|default:"—" }}</span></li>
+      <li><span class="label">Curso:</span> <span class="valor">{{ hijo.curso }}</span></li>
+    </ul>
+  </div>
+
+  <div class="acciones-detalle">
+    <a class="btn-editar" href="{% url 'estudiantes:kardex_listar' hijo.id %}">Ver Kárdex</a>
+    {# FUTURO: <a class="btn-volver" href="{% url 'asistencia:por_estudiante' hijo.id %}">Ver asistencia</a> #}
+  </div>
+</div>
+{% endblock %}

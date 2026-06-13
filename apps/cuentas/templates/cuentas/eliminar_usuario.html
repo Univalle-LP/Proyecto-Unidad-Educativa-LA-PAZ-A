@@ -1,0 +1,134 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Eliminar usuario{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'cuentas/css/eliminar_usuario.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="detalle-usuario">
+  <h2 class="titulo-detalle">Eliminar usuario</h2>
+
+  {# 🚫 Defensa UX: si llegó aquí con su propio id, no mostrar el formulario #}
+  {% if usuario.id == request.user.id %}
+    <div class="alert alert-warning">
+      No puedes eliminarte a ti mismo.
+    </div>
+
+    <a
+      href="{% if tipo == 'padres' %}{% url 'cuentas:lista_padres' %}{% elif tipo == 'personal' %}{% url 'cuentas:lista_personal' %}{% else %}{% url 'cuentas:lista_usuarios' %}{% endif %}"
+      class="btn-volver"
+    >
+      Volver
+    </a>
+
+  {% else %}
+
+    <div class="card-detalle">
+      <p>
+        Está a punto de eliminar al usuario
+        <strong>{{ usuario.get_full_name|default:usuario.nombres }}</strong>
+        {% if usuario.rol %} <span class="label">({{ usuario.rol }})</span>{% endif %}.
+      </p>
+      <div class="deps">
+        {% if estudiantes %}
+          <div class="deps-block">
+            <h4 class="deps-title">Estudiantes asociados</h4>
+            <ul class="lista-detalle lista-deps">
+              {% for estudiante in estudiantes %}
+                <li class="dep-row">
+                  <span class="valor">
+                    {{ estudiante.apellidos }} {{ estudiante.nombres }}
+                  </span>
+                  <span class="label chip">
+                    {% if estudiante.curso %}
+                      {{ estudiante.curso.nivel }} {{ estudiante.curso.paralelo }}
+                    {% else %}
+                      Sin curso
+                    {% endif %}
+                  </span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if cursos_regente %}
+          <div class="deps-block">
+            <h4 class="deps-title">Cursos donde es regente</h4>
+            <ul class="lista-detalle lista-deps">
+              {% for curso in cursos_regente %}
+                <li class="dep-row">
+                  <span class="valor">{{ curso.nivel }} {{ curso.paralelo }}</span>
+                  {% if curso.turno %}
+                    <span class="label chip">{{ curso.turno }}</span>
+                  {% endif %}
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if n_calendarios %}
+          <div class="deps-block">
+            <h4 class="deps-title">Calendarios de asistencia</h4>
+            <p class="deps-empty">
+              <strong>Calendarios creados por este usuario:</strong> {{ n_calendarios }}
+            </p>
+          </div>
+        {% endif %}
+
+        {% if not estudiantes and not cursos_regente and not n_calendarios %}
+          <p class="deps-empty"><strong>No se encontraron dependencias relevantes.</strong></p>
+        {% endif %}
+      </div>
+
+    </div>
+
+    <form method="post" class="acciones-detalle">
+      {% csrf_token %}
+
+      {% if permite_forzado %}
+        <div class="danger-zone">
+          <label class="danger-check">
+            <input type="checkbox" name="eliminar_todo" value="1">
+            <span class="danger-text">
+              <strong>Eliminar también dependencias históricas</strong>
+              <span class="muted">
+                (Citaciones, Kárdex, Estudiantes asociados y/o Calendarios de asistencia).
+              </span>
+              <span class="warning">
+                Esta acción es <u>permanente</u> y no se puede deshacer.
+              </span>
+            </span>
+          </label>
+        </div>
+      {% endif %}
+
+      <div class="btns-row">
+        <button type="submit" class="btn-eliminar">
+          Sí, eliminar usuario
+        </button>
+
+        <a
+          href="{% if tipo == 'padres' %}{% url 'cuentas:lista_padres' %}{% elif tipo == 'personal' %}{% url 'cuentas:lista_personal' %}{% else %}{% url 'cuentas:lista_usuarios' %}{% endif %}"
+          class="btn-volver"
+        >
+          Cancelar
+        </a>
+      </div>
+    </form>
+
+    {% if nota_integridad %}
+      <p class="nota">
+        * Para preservar la integridad, si no marcas la casilla de borrado total y existen dependencias
+        protegidas por el sistema, se intentará eliminar de forma segura; si no es posible, el usuario
+        se <strong>inactivará</strong> y se te informará.
+      </p>
+    {% endif %}
+
+  {% endif %}
+</div>
+{% endblock %}

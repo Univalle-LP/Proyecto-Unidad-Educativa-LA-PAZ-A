@@ -1,0 +1,309 @@
+/* === ENCABEZADO DEL DASHBOARD === */
+.dashboard-header {
+  background: linear-gradient(90deg, #0c2a57, #13386f); /* degradado azul elegante */
+  color: #fff;
+  padding: 1.8rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Opcional: puntitos sutiles animados como el header principal */
+.dashboard-header::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  animation: moveDots 12s linear infinite;
+  opacity: 0.3;
+  z-index: 0;
+}
+
+.dashboard-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.dashboard-header p {
+  font-size: 1rem;
+  color: #dce6ff; /* subtítulo suave */
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  position: relative;
+  z-index: 1;
+}
+
+/* Animación de puntitos compartida con el header */
+@keyframes moveDots {
+  from { background-position: 0 0; }
+  to { background-position: 40px 40px; }
+}
+
+/* ================== FORMULARIO Y BOTONES ================== */
+/* Contenedor del formulario */
+.form-cursos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Input de búsqueda */
+.form-cursos .input-busqueda {
+  flex: 1;
+  padding: 12px 14px;  /* altura consistente con botones */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  min-height: 44px; /* asegura altura uniforme */
+}
+
+.form-cursos .input-busqueda:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.5);
+}
+
+/* Botones (Buscar y Nuevo) */
+.form-cursos .btn-buscar,
+.form-cursos .btn-nuevo {
+  padding: 12px 18px;  /* altura consistente */
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-height: 44px; /* misma altura que input */
+  flex-shrink: 0;   /* evita que se encojan */
+}
+
+/* Botón de buscar */
+.form-cursos .btn-buscar {
+  border: none;
+  background-color: #28a745;
+  color: #fff;
+}
+
+.form-cursos .btn-buscar:hover {
+  background-color: #19692c;
+}
+
+/* Botón de nuevo curso */
+.form-cursos .btn-nuevo {
+  background-color: #007bff;
+  color: #fff;
+  border: 1px solid #007bff;
+  text-decoration: none;
+}
+
+.form-cursos .btn-nuevo:hover {
+  background-color: #004a99;
+  border-color: #004a99;
+}
+
+.total-estudiantes {
+  display: inline-flex;              
+  align-items: center;               
+  justify-content: center;           
+  padding: 12px 18px;              
+  min-height: 44px;                  
+  background-color: #00aeff;        
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;            
+  font-size: 1rem;                
+  text-align: center;
+  transition: all 0.25s ease;
+  cursor: default;                
+  flex-shrink: 0;                  
+  margin-bottom: 0;             
+}
+
+.total-estudiantes:hover {
+  background-color: #004a99;
+  transform: translateY(-2px);
+}
+
+/* Responsive: Apila elementos en móvil */
+@media (max-width: 700px) {
+  .form-cursos {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-cursos .input-busqueda,
+  .form-cursos .btn-buscar,
+  .form-cursos .btn-nuevo {
+    width: 100%;
+  }
+}
+
+
+/* ================== TABLA ================== */
+.table-wrapper {
+  overflow-x: auto;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  background: #fff;
+}
+
+table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px 12px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+thead th {
+  background-color: #d0e7ff;
+  color: #004a99;
+  font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+  background: #f6f9ff;
+}
+
+tbody tr:hover {
+  background: #dbe7ff;
+}
+
+/* ================== LINKS / BOTONES DENTRO DE TABLA ================== */
+table a {
+  display: inline-flex;               
+  align-items: center;                
+  justify-content: center;           
+  padding: 8px 14px;             
+  margin: 2px 2px 2px 0;
+  border-radius: 8px;             
+  font-size: 0.9rem;              
+  font-weight: 600;                 
+  text-align: center;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  text-decoration: none;
+  min-height: 38px;                    
+  flex-shrink: 0;                    
+  cursor: pointer;
+}
+
+/* Ver */
+table a.btn-ver {
+  background-color: #007bff;
+  color: #fff;
+  border-color: #007bff;
+}
+
+table a.btn-ver:hover {
+  background-color: #004a99;
+  border-color: #004a99;
+  transform: translateY(-1px);
+}
+
+/* Editar */
+table a.btn-editar {
+  background-color: #17a2b8;
+  color: #fff;
+  border-color: #17a2b8;
+}
+
+table a.btn-editar:hover {
+  background-color: #0d6771;
+  border-color: #0d6771;
+  transform: translateY(-1px);
+}
+
+/* Eliminar */
+table a.btn-eliminar {
+  background-color: #dc3545;
+  color: #fff;
+  border-color: #dc3545;
+}
+
+table a.btn-eliminar:hover {
+  background-color: #a71d2a;
+  border-color: #a71d2a;
+  transform: translateY(-1px);
+}
+
+/* Ver estudiantes */
+table a.btn-estudiantes {
+  background-color: #28a745;
+  color: #fff;
+  border-color: #28a745;
+}
+
+table a.btn-estudiantes:hover {
+  background-color: #19692c;
+  border-color: #19692c;
+  transform: translateY(-1px);
+}
+
+/* Botón Agregar Kárdex */
+.btn-agregar-kardex {
+  background: linear-gradient(135deg, #28a745, #19692c);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  border: 1px solid transparent;
+  min-height: 38px;
+}
+
+.btn-agregar-kardex:hover {
+  background: linear-gradient(135deg, #19692c, #0f3f1a);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0,0,0,0.15);
+}
+
+.btn-agregar-kardex:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+/* ================== RESPONSIVE ================== */
+@media (max-width: 900px) {
+  .cursos-dashboard form {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .cursos-dashboard table,
+  .cursos-dashboard th,
+  .cursos-dashboard td {
+    padding: 8px 10px;
+  }
+}

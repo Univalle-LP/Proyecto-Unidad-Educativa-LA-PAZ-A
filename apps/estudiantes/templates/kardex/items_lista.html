@@ -1,0 +1,85 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Catálogo de Ítems de Kárdex{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'estudiantes/css/items_lista.css' %}">
+{% endblock %}
+
+{% block content %}
+  <div class="dashboard-header">
+    <h2 class="hdr-sub">
+      Catálogo de Ítems de Kárdex
+    </h2>
+    <p>Listado de los items creados para Kardex.</p>
+  </div>
+
+<form method="get" class="form-filtros">
+  <div class="filtros-principal">
+    <input type="text" name="q" value="{{ q }}" placeholder="Buscar por descripción…">
+
+    <select name="area">
+      <option value=""> Área </option>
+      {% for v,label in areas %}
+        <option value="{{ v }}" {% if area_sel == v %}selected{% endif %}>{{ v }}</option>
+      {% endfor %}
+    </select>
+
+    <select name="sentido">
+      <option value=""> Sentido </option>
+      {% for v,label in sentidos %}
+        <option value="{{ v }}" {% if sentido_sel == v %}selected{% endif %}>{{ v }}</option>
+      {% endfor %}
+    </select>
+
+    <button type="submit">Filtrar</button>
+    <a href="{% url 'estudiantes:kardex_items_nuevo' %}" class="btn-nuevo">Nuevo ítem</a>
+  </div>
+</form>
+<div class="filtros-links">
+  <a href="?q={{ q }}&area={{ area_sel }}&sentido={{ sentido_sel }}&all=1">Ver todos</a>
+  <a href="?q={{ q }}&area={{ area_sel }}&sentido={{ sentido_sel }}">Ver paginados</a>
+</div>
+<p class="total-items">Total: <b>{{ total }}</b> ítems</p>
+
+<div class="table-wrapper">
+  <table>
+    <thead>
+      <tr>
+        <th style="width:120px;">Área</th>
+        <th>Descripción</th>
+        <th style="width:120px;">Sentido</th>
+        <th style="width:160px;">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for it in items %}
+      <tr>
+        <td>{{ it.area }}</td>
+        <td>{{ it.descripcion }}</td>
+        <td>{{ it.sentido }}</td>
+        <td>
+          <a href="{% url 'estudiantes:kardex_items_editar' it.id %}">Editar</a> 
+          <a href="{% url 'estudiantes:kardex_items_eliminar' it.id %}">Eliminar</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No hay ítems registrados.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% if is_paginated %}
+<div class="paginacion" style="margin-top:12px;">
+  {% if page_obj.has_previous %}
+    <a href="?page={{ page_obj.previous_page_number }}&q={{ q }}&area={{ area_sel }}&sentido={{ sentido_sel }}">« Anterior</a>
+  {% endif %}
+  <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+  {% if page_obj.has_next %}
+    <a href="?page={{ page_obj.next_page_number }}&q={{ q }}&area={{ area_sel }}&sentido={{ sentido_sel }}">Siguiente »</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

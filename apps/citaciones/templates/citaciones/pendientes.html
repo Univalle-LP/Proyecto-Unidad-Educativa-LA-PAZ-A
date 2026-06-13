@@ -1,0 +1,85 @@
+{% extends "layout/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Citaciones Pendientes{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'citaciones/css/pendientes.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+  <h2 class="hdr-sub">
+    Citaciones pendientes de aprobación
+  </h2>
+</div>
+
+<table class="tabla mt-3">
+  <thead>
+    <tr>
+      <th>Estudiante</th>
+      <th>Motivo</th>
+      {# ya no es solo sugerida #}
+      <th>Fecha y Hora (citación / sugerida)</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for c in rows %}
+    <tr>
+      <td>{{ c.estudiante }}</td>
+      <td>{{ c.motivo_resumen }}</td>
+      <td>
+        {# 1️⃣ Si YA tiene fecha/hora de citación (las que editas), mostramos esas #}
+        {% if c.fecha_citacion and c.hora_citacion %}
+          {{ c.fecha_citacion|date:"Y-m-d" }} {{ c.hora_citacion|time:"H:i" }}
+
+        {# 2️⃣ Si aún no tiene, mostramos la FECHA/HORA SUGERIDA por M/M/1 #}
+        {% elif c.eta_fecha and c.eta_hora %}
+          {{ c.eta_fecha|date:"Y-m-d" }} {{ c.eta_hora|time:"H:i" }}
+
+        {# 3️⃣ Si no hay nada, guion #}
+        {% else %}
+          —
+        {% endif %}
+      </td>
+      <td>
+        <button type="button"
+                class="btn-aprobar"
+                data-id="{{ c.id }}"
+                data-ajax="1">
+          Aprobar
+        </button>
+
+        {# Botón para ver los registros de Kárdex vinculados a esta citación #}
+        {% if c.kardex_registro_id %}
+        <button type="button"
+                class="btn-kardex"
+                data-id="{{ c.id }}">
+          Ver Acumulados
+        </button>
+        {% endif %}
+
+        <a class="btn-secondary"
+           href="{% url 'citaciones:editar_form' c.id %}">
+          Editar
+        </a>
+
+        <button type="button"
+                class="btn-rechazar"
+                data-id="{{ c.id }}"
+                data-ajax="1">
+          Rechazar
+        </button>
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="6">Sin pendientes.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
+
+{% block scripts %}
+<script src="{% static 'citaciones/js/pendientes.js' %}"></script>
+{% endblock %}
