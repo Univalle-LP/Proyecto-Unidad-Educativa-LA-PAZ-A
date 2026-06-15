@@ -1,0 +1,257 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f9fafe;
+  padding: 16px;
+}
+
+/* ====== ENCABEZADO ====== */
+.dashboard-header {
+  background: linear-gradient(90deg, #0c2a57, #13386f);
+  color: #fff;
+  padding: 1.8rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-header p {
+  font-size: 1rem;
+  color: #dce6ff;
+}
+
+/* ====== FORMULARIO ====== */
+.form-citaciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+.form-citaciones label {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-citaciones input[type="date"],
+.form-citaciones input[type="number"] {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  transition: 0.2s;
+}
+
+.form-citaciones input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+  outline: none;
+}
+
+/* ====== BOTONES ====== */
+button, .btn-buscar, .btn-hoy, .btn-navegar, .btn-editar, .btn-eliminar, .btn-cancelar {
+  border: none; /* elimina borde negro predeterminado */
+  outline: none; /* elimina foco predeterminado */
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fff;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  margin: 2px 2px 2px 0;
+}
+
+/* Botones específicos */
+.btn-buscar {
+  background-color: #28a745;
+}
+.btn-buscar:hover {
+  background-color: #19692c;
+}
+
+.btn-hoy {
+  background-color: #007bff;
+}
+.btn-hoy:hover {
+  background-color: #004a99;
+}
+
+.btn-navegar {
+  background-color: #6c757d;
+}
+.btn-navegar:hover {
+  background-color: #4a4f54;
+}
+
+.btn-editar {
+  background-color: #17a2b8;
+}
+.btn-editar:hover {
+  background-color: #0d6771;
+}
+
+.btn-eliminar, .btn-cancelar {
+  background-color: #dc3545;
+}
+.btn-eliminar:hover, .btn-cancelar:hover {
+  background-color: #a71d2a;
+}
+
+/* ====== TOTAL FORM ====== */
+.total {
+  font-weight: 600;
+  color: #333;
+  margin-left: auto;
+}
+
+/* ====== TABLA ====== */
+.table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  margin-bottom: 1.5rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+th, td {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  vertical-align: middle;
+}
+
+thead th {
+  background: #d0e7ff;
+  color: #004a99;
+  font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+  background: #f6f9ff;
+}
+
+tbody tr:hover {
+  background: #dbe7ff;
+}
+
+/* ====== TITULO DE DÍA ====== */
+.titulo-dia {
+  margin: 1rem 0 0.5rem;
+  color: #0c2a57;
+  font-weight: 700;
+  border-left: 4px solid #007bff;
+  padding-left: 10px;
+}
+
+/* ====== ALERTA ====== */
+.alerta {
+  background: #e7f1ff;
+  border-left: 5px solid #007bff;
+  color: #004a99;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 700px) {
+  .form-citaciones {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  button, .btn-buscar, .btn-hoy, .btn-navegar, .btn-editar, .btn-eliminar, .btn-cancelar {
+    width: 100%;
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+  }
+}
+
+/* ====== MODAL LIGERO (CONFIRM / ALERT) ====== */
+.modal-lite {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+}
+
+.modal-lite.show {
+  display: flex;
+}
+
+.modal-lite__box {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.5rem 1.8rem;
+  min-width: 280px;
+  max-width: 420px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.35);
+}
+
+.modal-lite__title {
+  margin: 0 0 .5rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.modal-lite__body {
+  margin: 0 0 1.2rem;
+  font-size: .95rem;
+  color: #4b5563;
+}
+
+.modal-lite__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+}
+
+.modal-lite__btn {
+  border: none;
+  border-radius: 999px;
+  padding: .4rem 1.2rem;
+  font-size: .9rem;
+  cursor: pointer;
+}
+
+.modal-lite__btn--ghost {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.modal-lite__btn--primary {
+  background: #2563eb;
+  color: #ffffff;
+}
