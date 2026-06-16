@@ -45,7 +45,7 @@
 }
 
 .login .form-row #id_username, .login .form-row #id_password {
-    padding: 8px;
+    padding: 9px;
     width: 100%;
     box-sizing: border-box;
 }
