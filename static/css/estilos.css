@@ -114,12 +114,13 @@ input[type="password"] {
 }
 
 input:focus {
-    border-color: #007BFF;
+    border-color: var(--secondary-blue);
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
     transform: scale(1.02);
 }
 
 /* ===== BUTTON ===== */
+/* Botón principal de llamada a la acción con colores definidos en variables globales */
 .btn-go {
     background-color: var(--primary-blue);
     color: white;
@@ -135,7 +136,7 @@ input:focus {
 }
 
 .btn-go:hover {
-    background-color: #003d7a;
+    background-color: var(--primary-blue-dark);
     transform: translateY(-2px);
     box-shadow: 0 6px 15px rgba(0, 82, 165, 0.4);
 }
@@ -148,7 +149,7 @@ input:focus {
 }
 
 .form-options a {
-    color: #007BFF;
+    color: var(--secondary-blue);
     text-decoration: none;
     font-size: 0.9rem;
     transition: 0.3s;
@@ -156,7 +157,7 @@ input:focus {
 
 .form-options a:hover {
     text-decoration: underline;
-    color: #004a99;
+    color: var(--primary-blue-dark);
 }
 
 /* ====== Animaciones ====== */
