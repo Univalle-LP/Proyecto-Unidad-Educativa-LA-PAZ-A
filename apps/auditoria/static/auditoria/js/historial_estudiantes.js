@@ -1,3 +1,4 @@
+//Historial de estudiantes - JS
 document.addEventListener("DOMContentLoaded", function () {
   const input = document.getElementById("audit-search");
   const clearBtn = document.getElementById("audit-clear");

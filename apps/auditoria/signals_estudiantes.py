@@ -6,7 +6,7 @@ from .models import StudentLog
 from .utils import get_request, get_ip_ua_from_request
 
 
-# ---------- Helpers internos ----------
+# ----------  internos ----------
 
 def _repr_estudiante(est: Estudiante | None) -> str:
     if not est:

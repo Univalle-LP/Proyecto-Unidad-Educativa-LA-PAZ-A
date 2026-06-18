@@ -6,7 +6,7 @@ from apps.estudiantes.models.kardex_registro import KardexRegistro
 from .models import StudentLog
 from .utils import get_request, get_ip_ua_from_request
 
-
+#Kardex
 def _get_user_ip_ua():
     request = get_request()
     user = getattr(request, "user", None) if request else None

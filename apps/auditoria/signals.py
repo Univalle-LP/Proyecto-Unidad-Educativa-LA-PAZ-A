@@ -3,7 +3,7 @@ from django.dispatch import receiver
 
 from .models import StudentLog
 
-
+#Señales
 def _get_ip(request):
     xff = request.META.get("HTTP_X_FORWARDED_FOR")
     if xff:

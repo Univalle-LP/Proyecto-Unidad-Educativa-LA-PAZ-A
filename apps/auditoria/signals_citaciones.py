@@ -75,7 +75,7 @@ def log_citacion_save(sender, instance: Citacion, created, **kwargs):
         user_agent=ua,
     )
 
-
+#Organizacion
 @receiver(post_delete, sender=Citacion)
 def log_citacion_delete(sender, instance: Citacion, **kwargs):
     """

@@ -1,7 +1,7 @@
 # apps/citaciones/admin.py
 from django.contrib import admin
 from .models import Citacion
-
+#Administracion
 @admin.register(Citacion)
 class CitacionAdmin(admin.ModelAdmin):
     list_display = ("id", "estudiante", "estado", "fecha_citacion", "hora_citacion", "motivo_resumen")

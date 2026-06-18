@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import StudentLog
 
-
+#Adminstracion
 @admin.register(StudentLog)
 class StudentLogAdmin(admin.ModelAdmin):
   list_display = ("creado_en", "usuario", "accion", "estudiante", "ip")
