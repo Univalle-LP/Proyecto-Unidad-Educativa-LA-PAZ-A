@@ -1,4 +1,7 @@
 # apps/api/views.py
+# Módulo de API REST - Proyecto Final
+# Desarrollado por: Daynor Callisaya
+
 
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
