@@ -106,13 +106,14 @@ input[type="password"] {
     width: 100%;
     padding: 14px 16px;
     margin-bottom: 1.2rem;
-    border: 1.5px solid #d1d5db;
+    border: 1.5px solid var(--input-border);
     border-radius: 10px;
     font-size: 15px;
     outline: none;
-    transition: all 0.3s ease;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
+/* Foco accesible en campos de texto con realce suave */
 input:focus {
     border-color: var(--secondary-blue);
     box-shadow: 0 0 10px rgba(0, 123, 255, 0.25);
