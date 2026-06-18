@@ -16,6 +16,20 @@ from apps.cursos.models import Curso
 Usuario = get_user_model()
 
 
+def _sanitize_text(value):
+    if isinstance(value, str):
+        return value.strip()
+    return None
+
+
+def _json_error(message, status=400):
+    return JsonResponse({"ok": False, "error": message}, status=status)
+
+
+def _json_internal_error():
+    return JsonResponse({"ok": False, "error": "Error interno del servidor"}, status=500)
+
+
 # ========== LOGIN ==========
 @csrf_exempt
 def api_login(request):
@@ -27,20 +41,14 @@ def api_login(request):
         try:
             raw_body = (request.body or b"").decode("utf-8")
             data = json.loads(raw_body) if raw_body.strip() else {}
-        except JSONDecodeError as e:
-            return JsonResponse(
-                {"ok": False, "error": f"JSON inválido: {str(e)}"},
-                status=400
-            )
+        except JSONDecodeError:
+            return _json_error("JSON inválido", status=400)
 
-        ci = data.get("ci")
-        password = data.get("password")
+        ci = _sanitize_text(data.get("ci"))
+        password = _sanitize_text(data.get("password"))
 
         if not ci or not password:
-            return JsonResponse(
-                {"ok": False, "error": "Faltan campos 'ci' o 'password'"},
-                status=400
-            )
+            return _json_error("Faltan campos 'ci' o 'password'", status=400)
 
         # ... (autenticación previa igual) ...
         user = authenticate(request, username=ci, password=password)
@@ -115,10 +123,10 @@ def api_login(request):
 
         return JsonResponse(resp_data)
 
-    except Exception as e:
+    except Exception:
         print("ERROR en api_login:")
-        print(traceback.format_exc())
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+        traceback.print_exc()
+        return _json_internal_error()
 
 
 # ========== CITACIONES ==========
@@ -129,9 +137,9 @@ def api_citaciones(request):
     GET /api/v1/citaciones/?ci_estudiante=...
     """
     try:
-        ci_estudiante = request.GET.get("ci_estudiante")
+        ci_estudiante = _sanitize_text(request.GET.get("ci_estudiante"))
         if not ci_estudiante:
-             return JsonResponse({"ok": False, "error": "Falta ci_estudiante"}, status=400)
+             return _json_error("Falta ci_estudiante", status=400)
         
         estudiante = Estudiante.objects.filter(ci=ci_estudiante).first()
         if not estudiante:
@@ -157,9 +165,10 @@ def api_citaciones(request):
             
         return JsonResponse({"ok": True, "items": items})
 
-    except Exception as e:
-        print("ERROR api_citaciones:", e)
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+    except Exception:
+        print("ERROR api_citaciones:")
+        traceback.print_exc()
+        return _json_internal_error()
 
 
 # ========== REGENTE: ASISTENCIA ==========
@@ -189,8 +198,8 @@ def api_regente_asistencia(request):
         errores = []
 
         for item in asistencias:
-            ci = item.get("ci")
-            estado = item.get("estado") # PRESENTE, FALTA, ATRASO
+            ci = _sanitize_text(item.get("ci"))
+            estado = _sanitize_text(item.get("estado")) # PRESENTE, FALTA, ATRASO
             
             estudiante = Estudiante.objects.filter(ci=ci).first()
             if not estudiante:
@@ -216,9 +225,10 @@ def api_regente_asistencia(request):
             "errores": errores
         })
 
-    except Exception as e:
-        print("ERROR api_regente_asistencia:", e)
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+    except Exception:
+        print("ERROR api_regente_asistencia:")
+        traceback.print_exc()
+        return _json_internal_error()
 
 
 # ========== REGENTE: KÁRDEX ==========
@@ -236,9 +246,9 @@ def api_regente_kardex(request):
 
     try:
         data = json.loads(request.body)
-        ci = data.get("ci_estudiante")
+        ci = _sanitize_text(data.get("ci_estudiante"))
         item_id = data.get("item_id")
-        observacion = data.get("observacion", "")
+        observacion = _sanitize_text(data.get("observacion")) or ""
         
         # Opcional: ID del docente/regente que reporta (si se envía en el body o se saca del token/session)
         # Por simplicidad, asumimos que el backend podría sacarlo del user autenticado si usáramos tokens reales.
@@ -265,9 +275,10 @@ def api_regente_kardex(request):
 
         return JsonResponse({"ok": True, "id": registro.id})
 
-    except Exception as e:
-        print("ERROR api_regente_kardex:", e)
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+    except Exception:
+        print("ERROR api_regente_kardex:")
+        traceback.print_exc()
+        return _json_internal_error()
 
 
 # ========== REGENTE: DATOS AUXILIARES ==========
@@ -277,9 +288,9 @@ def api_estudiantes_curso(request):
     GET /api/v1/estudiantes-curso/?curso_id=...
     """
     try:
-        curso_id = request.GET.get("curso_id")
+        curso_id = _sanitize_text(request.GET.get("curso_id"))
         if not curso_id:
-            return JsonResponse({"ok": False, "error": "Falta curso_id"}, status=400)
+            return _json_error("Falta curso_id", status=400)
 
         estudiantes = Estudiante.objects.filter(curso_id=curso_id).order_by("apellidos", "nombres")
         
@@ -292,8 +303,9 @@ def api_estudiantes_curso(request):
             })
             
         return JsonResponse({"ok": True, "estudiantes": data})
-    except Exception as e:
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+    except Exception:
+        traceback.print_exc()
+        return _json_internal_error()
 
 
 def api_kardex_items(request):
@@ -315,8 +327,9 @@ def api_kardex_items(request):
             })
             
         return JsonResponse({"ok": True, "items": data})
-    except Exception as e:
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+    except Exception:
+        traceback.print_exc()
+        return _json_internal_error()
 
 
 
@@ -329,12 +342,9 @@ def api_perfil(request):
     """
     try:
         # Aceptar ambos nombres: ci_estudiante y ci
-        ci_estudiante = request.GET.get("ci_estudiante") or request.GET.get("ci")
+        ci_estudiante = _sanitize_text(request.GET.get("ci_estudiante")) or _sanitize_text(request.GET.get("ci"))
         if not ci_estudiante:
-            return JsonResponse(
-                {"ok": False, "error": "Falta parámetro 'ci' o 'ci_estudiante'"},
-                status=400
-            )
+            return _json_error("Falta parámetro 'ci' o 'ci_estudiante'", status=400)
 
         estudiante = Estudiante.objects.select_related("curso", "padre").filter(ci=ci_estudiante).first()
 
@@ -372,13 +382,10 @@ def api_perfil(request):
             "curso": curso_str,
         })
 
-    except Exception as e:
+    except Exception:
         print("ERROR en api_perfil:")
-        print(traceback.format_exc())
-        return JsonResponse(
-            {"ok": False, "error": f"{type(e).__name__}: {str(e)}"},
-            status=500
-        )
+        traceback.print_exc()
+        return _json_internal_error()
 
 
 # ========== ASISTENCIA ==========
@@ -390,12 +397,9 @@ def api_asistencia(request):
     """
     try:
         # Aceptar ambos nombres
-        ci_estudiante = request.GET.get("ci_estudiante") or request.GET.get("ci")
+        ci_estudiante = _sanitize_text(request.GET.get("ci_estudiante")) or _sanitize_text(request.GET.get("ci"))
         if not ci_estudiante:
-            return JsonResponse(
-                {"ok": False, "error": "Falta parámetro 'ci' o 'ci_estudiante'"},
-                status=400
-            )
+            return _json_error("Falta parámetro 'ci' o 'ci_estudiante'", status=400)
 
         estudiante = Estudiante.objects.filter(ci=ci_estudiante).first()
 
@@ -423,13 +427,10 @@ def api_asistencia(request):
             "items": items,
         })
 
-    except Exception as e:
+    except Exception:
         print("ERROR en api_asistencia:")
-        print(traceback.format_exc())
-        return JsonResponse(
-            {"ok": False, "error": f"{type(e).__name__}: {str(e)}"},
-            status=500
-        )
+        traceback.print_exc()
+        return _json_internal_error()
 
 # ========== KÁRDEX ==========
 
@@ -439,9 +440,9 @@ def api_kardex(request):
     Devuelve registros del kárdex del estudiante
     """
     try:
-        ci_estudiante = request.GET.get("ci_estudiante")
+        ci_estudiante = _sanitize_text(request.GET.get("ci_estudiante"))
         if not ci_estudiante:
-            return JsonResponse({"ok": False, "error": "Falta parámetro 'ci_estudiante'"}, status=400)
+            return _json_error("Falta parámetro 'ci_estudiante'", status=400)
 
         estudiante = Estudiante.objects.filter(ci=ci_estudiante).first()
         if not estudiante:
@@ -464,8 +465,9 @@ def api_kardex(request):
 
         return JsonResponse({"ok": True, "items": items})
 
-    except Exception as e:
-        print("ERROR en api_kardex", e)
-        return JsonResponse({"ok": False, "error": str(e)}, status=500)
+    except Exception:
+        print("ERROR en api_kardex")
+        traceback.print_exc()
+        return _json_internal_error()
 
 
