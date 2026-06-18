@@ -28,7 +28,7 @@ body.login-split {
 /* ===== LEFT SIDE ===== */
 .login-left {
     flex: 1;
-    background: linear-gradient(135deg, #004a99, #007BFF);
+    background: linear-gradient(135deg, var(--primary-blue-dark), var(--secondary-blue));
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -39,6 +39,7 @@ body.login-split {
     overflow: hidden;
 }
 
+/* Minimiza la distracción usando un halo suave y animado en el fondo del panel izquierdo */
 /* Fondo animado sutil */
 .login-left::before {
     content: "";
@@ -93,7 +94,7 @@ body.login-split {
 }
 
 h2 {
-    color: #0052A5;
+    color: var(--primary-blue);
     margin-bottom: 2rem;
     text-align: center;
     font-weight: 700;
@@ -120,7 +121,7 @@ input:focus {
 
 /* ===== BUTTON ===== */
 .btn-go {
-    background-color: #0052A5;
+    background-color: var(--primary-blue);
     color: white;
     border: none;
     padding: 12px 20px;
