@@ -1,3 +1,19 @@
+/* Variables globales para estilos reutilizables y mejor mantenimiento */
+:root {
+    --primary-blue: #0052A5;
+    --primary-blue-dark: #003d7a;
+    --secondary-blue: #007BFF;
+    --input-border: #d1d5db;
+    --background-surface: #f5f7fb;
+    --card-surface: #ffffff;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 /* ========== LOGIN SPLIT DESIGN (Mejorado) ========== */
 body.login-split {
     margin: 0;
