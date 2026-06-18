@@ -44,4 +44,4 @@ if settings.DEBUG:
 
 # === Manejadores de Errores Globales ===
 handler403 = "apps.cuentas.views.errors.error_403"
-handler404 = "apps.cuentas.handlers.error_404"
+handler404 = "apps.cuentas.handlers.error_404"  
