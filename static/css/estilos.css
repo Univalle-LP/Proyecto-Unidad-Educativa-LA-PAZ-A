@@ -161,6 +161,12 @@ input:focus {
     color: var(--primary-blue-dark);
 }
 
+/* Accesibilidad: estilo de foco visible para el botón principal */
+.btn-go:focus-visible {
+    outline: 3px solid rgba(0, 123, 255, 0.4);
+    outline-offset: 4px;
+}
+
 /* ====== Animaciones ====== */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
@@ -183,6 +189,7 @@ input:focus {
 }
 
 /* ===== Responsive ===== */
+/* Ajustes móviles para garantizar que el login se adapte correctamente en pantallas pequeñas */
 @media (max-width: 850px) {
     .login-split {
         flex-direction: column;
