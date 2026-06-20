@@ -9,14 +9,17 @@
 {% block content %}
 <div class="detalle-curso">
   <h2 class="titulo-detalle">Detalle del Curso</h2>
-
+  <!-- =========================
+     DETALLES DEL CURSO
+     ========================= -->
   <div class="card-detalle">
     <ul class="lista-detalle">
       <li><span class="label">Nivel:</span> <span class="valor">{{ curso.nivel }}</span></li>
       <li><span class="label">Paralelo:</span> <span class="valor">{{ curso.paralelo }}</span></li>
       <li><span class="label">Regente:</span> <span class="valor">{{ curso.regente }}</span></li>
       <li><span class="label">Creado en:</span> <span class="valor">{{ curso.creado_en|date:"d/m/Y H:i" }}</span></li>
-      <li><span class="label">Actualizado en:</span> <span class="valor">{{ curso.actualizado_en|date:"d/m/Y H:i" }}</span></li>
+      <li><span class="label">Actualizado en:</span> <span class="valor">{{ curso.actualizado_en|date:"d/m/Y H:i"
+          }}</span></li>
     </ul>
   </div>
 
