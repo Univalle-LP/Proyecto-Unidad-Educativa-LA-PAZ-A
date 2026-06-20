@@ -10,7 +10,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # === SEGURIDAD / LOGIN ===
 
-DEBUG = os.environ.get("DEBUG", "True") == "True"
+# En producción, DEBUG SIEMPRE debe ser False. Solo se activará si pasas DEBUG=True por variables de entorno.
+DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -26,7 +27,8 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 
 
-SECRET_KEY = "django-insecure-if^n0ab85w_-8nsbz5!o^t=dk4%+ml^v&72vpez383d_ohdncf"
+# Usar una variable de entorno para SECRET_KEY. Nunca debe estar expuesta en el código en producción.
+SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-if^n0ab85w_-8nsbz5!o^t=dk4%+ml^v&72vpez383d_ohdncf")
 
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/dashboard/director/"
@@ -69,8 +71,9 @@ CHANNEL_LAYERS = {
     }
 }
 
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+# Las cookies viajan de forma segura por HTTPS si estamos en producción (DEBUG=False)
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
 SESSION_SAVE_EVERY_REQUEST = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 
@@ -143,6 +146,16 @@ DATABASES = {
         },
     }
 }
+
+# === SEGURIDAD EXTRA EN PRODUCCIÓN ===
+if not DEBUG:
+    # Redirigir siempre todo el tráfico a HTTPS
+    SECURE_SSL_REDIRECT = True
+    
+    # HSTS: Obligar al navegador a siempre usar HTTPS para este dominio durante 1 año
+    SECURE_HSTS_SECONDS = 31536000 
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
 
 
 # === VALIDADORES DE PASSWORD ===
