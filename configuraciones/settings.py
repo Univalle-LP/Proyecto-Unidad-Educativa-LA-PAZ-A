@@ -8,7 +8,7 @@ import os
 # === BASE ===
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# === SEGURIDAD / LOGIN ===
+# === SEGURIDAD Y LOGIN ===
 
 # En producción, DEBUG SIEMPRE debe ser False. Solo se activará si pasas DEBUG=True por variables de entorno.
 DEBUG = os.environ.get("DEBUG", "False") == "True"
