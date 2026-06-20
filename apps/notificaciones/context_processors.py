@@ -24,7 +24,7 @@ def notificaciones_panel(request):
         .order_by("-enviada_en")[:20]
     )
 
-    # Cantidad de no leídas / pendientes
+    # Cantidad de no leídas y pendientes
     unread_count = Notificacion.objects.filter(
         usuario_destino_id=user.id,
         estado_entrega=Notificacion.Estado.PENDIENTE,
