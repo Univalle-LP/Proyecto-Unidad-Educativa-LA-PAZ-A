@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "beu0hpduvweswzq20pvc-mysql.services.clever-cloud.com",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "Mi Base de Datos",
+            "database": "beu0hpduvweswzq20pvc",
+            "username": "uffjaj6pssk7gxuz",
+            "password": "SNMfzxXMBbtDLKmHT5Y1"
+        }
+    ]
+}
